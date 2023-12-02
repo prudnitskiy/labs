@@ -38,12 +38,15 @@ jobs:
 
     - name: Terraform Init
       run: terraform init
+      working-directory: terraform
 
     - name: Terraform Format
       run: terraform fmt -check
+      working-directory: terraform
 
     - name: Terraform Plan
       id: tf-plan
+      working-directory: terraform
       run: |
         export exitcode=0
         terraform plan -detailed-exitcode -no-color -out tfplan || export exitcode=$?
@@ -57,14 +60,12 @@ jobs:
           exit 0
         fi
 
-    # Save plan to artifacts
     - name: Publish Terraform Plan
       uses: actions/upload-artifact@v3
       with:
         name: tfplan
         path: tfplan
 
-    # Create string output of Terraform Plan
     - name: Create String Output
       id: tf-plan-string
       run: |
@@ -81,14 +82,12 @@ jobs:
         echo "</details>" >> $GITHUB_OUTPUT
         echo "${delimiter}" >> $GITHUB_OUTPUT
 
-    # Publish Terraform Plan as task summary
     - name: Publish Terraform Plan to Task Summary
       env:
         SUMMARY: ${{ steps.tf-plan-string.outputs.summary }}
       run: |
         echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
 
-    # If this is a PR post the changes
     - name: Push Terraform Output to PR
       if: github.ref != 'refs/heads/main'
       uses: actions/github-script@v6
@@ -113,24 +112,21 @@ jobs:
     needs: [terraform-plan]
 
     steps:
-    # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v3
 
-    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
 
-    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
+      working-directory: terraform
       run: terraform init
 
-    # Download saved plan from artifacts
     - name: Download Terraform Plan
       uses: actions/download-artifact@v3
       with:
         name: tfplan
 
-    # Terraform Apply
     - name: Terraform Apply
+      working-directory: terraform
       run: terraform apply -auto-approve tfplan
