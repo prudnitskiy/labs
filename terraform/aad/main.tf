@@ -69,7 +69,7 @@ resource "azuread_application" "main" {
 
 resource "azuread_service_principal" "main" {
   application_id = azuread_application.main.application_id
-  owners = [data.azuread_client_config.current.object_id]
+  owners         = [data.azuread_client_config.current.object_id]
 }
 
 resource "azuread_directory_role" "cloud_application_administrator" {
@@ -83,7 +83,7 @@ resource "azurerm_role_definition" "main" {
   description = "This is role for App registrations used for ${var.app_name}."
 
   permissions {
-    actions     = [
+    actions = [
       "Microsoft.Compute/virtualMachines/read",
       "Microsoft.Compute/virtualMachineScaleSets/*/read"
     ]
@@ -96,9 +96,9 @@ resource "azurerm_role_definition" "main" {
 }
 
 resource "azurerm_role_assignment" "main" {
-  scope                = data.azurerm_subscription.primary.id
-  role_definition_id   = azurerm_role_definition.main.role_definition_resource_id
-  principal_id         = azuread_service_principal.main.object_id
+  scope              = data.azurerm_subscription.primary.id
+  role_definition_id = azurerm_role_definition.main.role_definition_resource_id
+  principal_id       = azuread_service_principal.main.object_id
 }
 
 resource "azuread_application_password" "main" {

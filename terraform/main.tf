@@ -7,8 +7,8 @@ resource "azurerm_resource_group" "main" {
 }
 
 module "aad_app" {
-  source            = "./aad"
-  app_name          = "IAP personal"
+  source   = "./aad"
+  app_name = "IAP personal"
   app_redirect_uris = [
     "https://${var.auth_root}/oauth2/callback"
   ]

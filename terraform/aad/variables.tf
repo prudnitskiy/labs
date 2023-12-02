@@ -4,18 +4,18 @@ variable "app_owners" {
   description = "A set of object IDs of principals that will be granted ownership of the application."
 }
 
-variable app_name {
+variable "app_name" {
   type        = string
   description = "app name"
 }
 
-variable app_redirect_uris {
-    type = list(string)
-    description = "App redirect URI(s)"
+variable "app_redirect_uris" {
+  type        = list(string)
+  description = "App redirect URI(s)"
 }
 
-variable app_identifier_uris {
-    type = list(string)
-    description = "App redirect URI(s)"
-    default = [""]
+variable "app_identifier_uris" {
+  type        = list(string)
+  description = "App redirect URI(s)"
+  default     = [""]
 }
