@@ -24,10 +24,11 @@ terraform {
 
 provider "azurerm" {
   features {}
+  use_oidc = true
 }
 
 provider "azuread" {
-  features {}
+  use_oidc = true
 }
 
 provider "cloudflare" {

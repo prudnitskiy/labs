@@ -18,3 +18,9 @@ variable "auth_root" {
   default     = "auth.prudnitskiy.pro"
   description = "auth root domain"
 }
+
+variable "resources_owner" {
+  type        = string
+  default     = null
+  description = "AAD resources owner"
+}
