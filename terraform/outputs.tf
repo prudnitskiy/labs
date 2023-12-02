@@ -16,6 +16,6 @@ output "tenant_id" {
 }
 
 output "private_grp_id" {
-  value = azuread_group.private.id
+  value       = azuread_group.private.id
   description = "Private group ID"
 }

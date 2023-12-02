@@ -3,10 +3,10 @@ resource "random_pet" "app" {
 }
 
 resource "azuread_application" "main" {
-  display_name = "${var.app_name}-${random_pet.app.id}"
+  display_name = "${var.aad_app_name}-${random_pet.app.id}"
 
   web {
-    redirect_uris = var.app_redirect_uris
+    redirect_uris = var.aad_app_redirect_uris
   }
 
   api {
@@ -60,16 +60,16 @@ resource "azuread_application" "main" {
     }
   }
 
-  identifier_uris = var.app_identifier_uris
+  identifier_uris = var.aad_app_identifier_uris
 
   prevent_duplicate_names = true
   sign_in_audience        = "AzureADMyOrg"
-  owners                  = var.app_owners
+  owners                  = var.aad_app_owners
 }
 
 resource "azuread_service_principal" "main" {
-  application_id = azuread_application.main.application_id
-  owners = [data.azuread_client_config.current.object_id]
+  client_id = azuread_application.main.client_id
+  owners    = [var.aad_resources_owner]
 }
 
 resource "azuread_directory_role" "cloud_application_administrator" {
@@ -78,12 +78,12 @@ resource "azuread_directory_role" "cloud_application_administrator" {
 
 
 resource "azurerm_role_definition" "main" {
-  name        = "${var.app_name}-role"
+  name        = "${var.aad_app_name}-role"
   scope       = data.azurerm_subscription.primary.id
-  description = "This is role for App registrations used for ${var.app_name}."
+  description = "This is role for App registrations used for ${var.aad_app_name}."
 
   permissions {
-    actions     = [
+    actions = [
       "Microsoft.Compute/virtualMachines/read",
       "Microsoft.Compute/virtualMachineScaleSets/*/read"
     ]
@@ -96,12 +96,12 @@ resource "azurerm_role_definition" "main" {
 }
 
 resource "azurerm_role_assignment" "main" {
-  scope                = data.azurerm_subscription.primary.id
-  role_definition_id   = azurerm_role_definition.main.role_definition_resource_id
-  principal_id         = azuread_service_principal.main.object_id
+  scope              = data.azurerm_subscription.primary.id
+  role_definition_id = azurerm_role_definition.main.role_definition_resource_id
+  principal_id       = azuread_service_principal.main.object_id
 }
 
 resource "azuread_application_password" "main" {
-  display_name          = var.app_name
+  display_name          = var.aad_app_name
   application_object_id = azuread_application.main.object_id
 }
