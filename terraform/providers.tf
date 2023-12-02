@@ -14,6 +14,7 @@ terraform {
         storage_account_name = "eaitfstate"
         container_name       = "lab"
         key                  = "core.tfstate"
+        use_oidc             = true
     }
 }
 

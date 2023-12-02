@@ -3,7 +3,7 @@ name: 'Terraform Plan/Apply'
 on:
   push:
     branches:
-    - main
+    - feature/terraform
   pull_request:
     branches:
     - main

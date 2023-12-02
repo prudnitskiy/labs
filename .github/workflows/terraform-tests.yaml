@@ -3,7 +3,7 @@ name: 'Terraform Unit Tests'
 on:
   push:
     branches-ignore:
-      - main
+      - feature/terraform
 
 jobs:
   terraform-unit-tests:
