@@ -1,5 +1,6 @@
 name: 'Terraform Plan/Apply'
 
+
 on:
   push:
     branches:
@@ -8,15 +9,21 @@ on:
     branches:
     - main
 
+
 permissions:
   id-token: write
   contents: read
   pull-requests: write
 
+
 env:
   ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
   ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
   ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+  TF_VAR_dns_cf_account: "${{ secrets.DNS_CF_ACCOUNT }}"
+  TF_VAR_dns_cf_token: "${{ secrets.DNS_CF_TOKEN }}"
+  TF_VAR_dns_root_host: "${{ secrets.ROOT_HOST }}"
+
 
 jobs:
   terraform-plan:
@@ -41,7 +48,7 @@ jobs:
       working-directory: terraform
 
     - name: Terraform Format
-      run: terraform fmt -check
+      run: terraform fmt -check -diff
       working-directory: terraform
 
     - name: Terraform Plan
